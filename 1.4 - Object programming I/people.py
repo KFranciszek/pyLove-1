@@ -2,56 +2,60 @@ import json
 
 class Czlowiek:
     bmi = 0
-    def __init__(self, waga, wzrost, imie):
+    roznicaWagiDoIdealu = 0
+    def __init__(self, imie, waga, wzrost):
         self.waga = waga
-        self.wzrost = wzrost
+        self.wzrost = wzrost * 0.01
         self.imie = imie
 
     def speak(self):
         print("Mowie prawde")
 
     def count_bmi(self):
-        self.bmi = round(self.waga / ((self.wzrost * 0.01) ** 2), 2) # zmienna bmi w konstruktorze
+        self.bmi = round(self.waga / ((self.wzrost) ** 2), 2) # zmienna bmi klasy czlowiek
+        return self.bmi
 
     def diff_to_norm(self):
-    #    self.waga_OK = 80 # self.bmi * (self.wzrost ** 2)
-#3     self.diff = self.waga_OK - self.waga
-  #      return self.diff
-
         if self.bmi < 18.5:
-            oczekiwana_waga = 18.5 * self.wzrost ** 2
-            roznica = oczekiwana_waga - self.waga
-            print("Musisz schudnąć {}", format.(roznica))  # tu jestblad
+            oczekiwana_waga = 18.5 * (self.wzrost ** 2)
+            self.roznicaWagiDoIdealu = round(oczekiwana_waga - self.waga, 2)
+            return "Musisz przytyć {} kg.".format(self.roznicaWagiDoIdealu)
         elif self.bmi > 25.0:
-            oczekiwana_waga = 25 * self.wzrost ** 2
-            roznica = self.waga - oczekiwana_waga
-            print("Musisz przytyć {}", format.(roznica))  # tu jest blad
-
-        """
-        BMI = float(self.count_bmi())
-        if BMI < 19.99:
-            print("Masz niedowagę")
-        elif BMI > 20 and BMI < 24.99:
-            print("Masz prawidłową wagę")
-        elif BMI > 25 and BMI < 29.99:
-            print("Masz nadwagę")
+            oczekiwana_waga = 25 * (self.wzrost ** 2)
+            self.roznicaWagiDoIdealu = round(self.waga - oczekiwana_waga, 2)
+            return "Musisz schudnąć {} kg.".format(self.roznicaWagiDoIdealu)
         else:
-            print("Masz otyłość")
-    """
-    def save_data(self):
+            return "Masz prawidłową wagę."
 
-        with open('{}.json'.format(self.imie) 'w') as file:
+
+    def save_data(self):
+         with open('{}.json'.format(self.imie), 'w') as file:
             json.dump(
-                {'waga': self.waga}, file)
+                {'imie': self.imie,
+                'waga': self.waga,
+                 'wzrost': self.wzrost}, file)
+
+    def timeToReachNormWeight(self, activity):
+        time = self.roznicaWagiDoIdealu * 6000 / activity
+        return time
 
     def to_burn(self):
-        pass
+            run, bike, hobby, chess = 500, 600, 250, 125
+
+            print("Aby osiągnąć prawidłową wagę należy biegać {} godzin".format(self.timeToReachNormWeight(run)))
+            print("Lub jeździć na rowerze przez {} godzin".format(self.timeToReachNormWeight(bike)))
+            print("Można też uprawiać inne hobby przez {} godzin".format(self.timeToReachNormWeight(hobby)))
+            print("W ostatecznosci można grać w szachy przez {} godzin".format(self.timeToReachNormWeight(chess)))
 
     def to_eat(self):
-        pass
+        choco = round(6000 * self.roznicaWagiDoIdealu / 4500, 1)
+        potatos = round(6000 * self.roznicaWagiDoIdealu / 800, 1)
+
+        print("Aby osiągnąć prawidłową wagę należy zjeść {} kg czekolady lub {} kg ziemniaków".format(choco, potatos))
 
     def what_to_do(self):
-        pass
+        return self.diff_to_norm()
+
 
 class Polityk(Czlowiek):
     bribe = False
@@ -66,8 +70,18 @@ class Polityk(Czlowiek):
 
 
 
-adam = Polityk(75, 180, "Adam")
-print(adam.count_bmi())
-print(adam.bmi)
+adam = Polityk("Aga", 80, 172,)
+print(adam.imie)
+adam.count_bmi()
 print(adam.diff_to_norm())
 
+if adam.bmi > 25:
+    adam.to_burn()
+elif adam.bmi < 18.5:
+    adam.to_eat()
+else:
+    print("Waga prawidłowa")
+
+print(adam.what_to_do())
+
+# adam.save_data()
