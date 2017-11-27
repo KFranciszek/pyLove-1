@@ -84,4 +84,4 @@ else:
 
 print(adam.what_to_do())
 
-# adam.save_data()
+adam.save_data()
